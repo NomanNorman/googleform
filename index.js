@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import puppeteer from 'puppeteer-core';  // Use puppeteer-core
-import chrome from 'chrome-aws-lambda';  // Import chrome-aws-lambda
+import puppeteer from 'puppeteer-core';
+import chrome from 'chrome-aws-lambda';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import dotenv from 'dotenv';
 
@@ -103,7 +103,7 @@ app.post('/generate-script', async (req, res) => {
         res.json({ script });
     } catch (error) {
         console.error(`Error generating script: ${error.message}`);
-        res.status(500).json({ error: 'Failed to generate script.' });
+        res.status(500).json({ error: `Failed to generate script: ${error.message}` });
     }
 });
 
