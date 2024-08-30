@@ -1,13 +1,14 @@
 import express from 'express';
 import cors from 'cors';
-import puppeteer from 'puppeteer';
+import puppeteerCore from 'puppeteer-core';  // Ensure you're using puppeteer-core
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import dotenv from 'dotenv';
+import chromium from 'chrome-aws-lambda';  // For serverless environments
 
 dotenv.config();
 
 const app = express();
-app.use(cors()); // Allow CORS
+app.use(cors());  // Allow CORS
 app.use(express.json());
 
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
@@ -76,7 +77,13 @@ app.post('/generate-script', async (req, res) => {
     }
 
     try {
-        const browser = await puppeteer.launch({ headless: true });
+        // Use chromium from chrome-aws-lambda for serverless environments
+        const browser = await chromium.puppeteer.launch({
+            args: chromium.args,
+            executablePath: await chromium.executablePath,
+            headless: chromium.headless,
+        });
+
         const page = await browser.newPage();
         
         await page.goto(googleFormUrl, { waitUntil: 'networkidle0' });
