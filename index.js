@@ -1,14 +1,14 @@
 import express from 'express';
 import cors from 'cors';
-import puppeteerCore from 'puppeteer-core';  // Ensure you're using puppeteer-core
+import puppeteerCore from 'puppeteer-core';
+import chromium from 'chrome-aws-lambda';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import dotenv from 'dotenv';
-import chromium from 'chrome-aws-lambda';  // For serverless environments
 
 dotenv.config();
 
 const app = express();
-app.use(cors());  // Allow CORS
+app.use(cors()); // Allow CORS
 app.use(express.json());
 
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
@@ -77,13 +77,11 @@ app.post('/generate-script', async (req, res) => {
     }
 
     try {
-        // Use chromium from chrome-aws-lambda for serverless environments
-        const browser = await chromium.puppeteer.launch({
+        const browser = await puppeteerCore.launch({
             args: chromium.args,
             executablePath: await chromium.executablePath,
-            headless: chromium.headless,
+            headless: chromium.headless
         });
-
         const page = await browser.newPage();
         
         await page.goto(googleFormUrl, { waitUntil: 'networkidle0' });
@@ -105,7 +103,7 @@ app.post('/generate-script', async (req, res) => {
         res.json({ script });
     } catch (error) {
         console.error(`Error generating script: ${error.message}`);
-        res.status(500).json({ error: 'Failed to generate script.' });
+        res.status(500).json({ error: `Failed to generate script: ${error.message}` });
     }
 });
 
