@@ -11,7 +11,6 @@ app.use(cors());
 app.use(express.json());
 
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
-const googleFormUrl = process.env.FORM_URL;
 
 // Function to fetch answers from Gemini API in batches
 async function fetchAnswersFromGeminiBatch(questionsWithOptions) {
