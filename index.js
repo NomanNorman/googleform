@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import puppeteerCore from 'puppeteer-core';
-import chromium from 'chrome-aws-lambda';
+import puppeteer from 'puppeteer-core';  // Use puppeteer-core
+import chrome from 'chrome-aws-lambda';  // Import chrome-aws-lambda
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import dotenv from 'dotenv';
 
@@ -77,10 +77,10 @@ app.post('/generate-script', async (req, res) => {
     }
 
     try {
-        const browser = await puppeteerCore.launch({
-            args: chromium.args,
-            executablePath: await chromium.executablePath,
-            headless: chromium.headless
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: chrome.args,  // Use arguments from chrome-aws-lambda
+            executablePath: await chrome.executablePath,  // Use executable path from chrome-aws-lambda
         });
         const page = await browser.newPage();
         
@@ -103,7 +103,7 @@ app.post('/generate-script', async (req, res) => {
         res.json({ script });
     } catch (error) {
         console.error(`Error generating script: ${error.message}`);
-        res.status(500).json({ error: `Failed to generate script: ${error.message}` });
+        res.status(500).json({ error: 'Failed to generate script.' });
     }
 });
 
