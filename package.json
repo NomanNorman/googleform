@@ -10,12 +10,12 @@
     "@google/generative-ai": "^0.17.1",
     "axios": "^1.7.5",
     "cheerio": "^1.0.0",
+    "chrome-aws-lambda": "^9.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "google-auth-library": "^9.14.0",
     "node-fetch": "^3.3.2",
-    "puppeteer": "^23.2.1",
     "puppeteer-core": "^23.2.1",
     "winston": "^3.8.2"
   }
