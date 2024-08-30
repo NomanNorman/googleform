@@ -1,8 +1,9 @@
 import express from 'express';
 import cors from 'cors';
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import dotenv from 'dotenv';
+import chromium from 'chrome-aws-lambda';
 
 dotenv.config();
 
@@ -11,7 +12,6 @@ app.use(cors());
 app.use(express.json());
 
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
-const googleFormUrl = process.env.FORM_URL;
 
 // Function to fetch answers from Gemini API in batches
 async function fetchAnswersFromGeminiBatch(questionsWithOptions) {
@@ -77,7 +77,12 @@ app.post('/generate-script', async (req, res) => {
     }
 
     try {
-        const browser = await puppeteer.launch({ headless: true });
+        const browser = await chromium.puppeteer.launch({
+            args: chromium.args,
+            defaultViewport: chromium.defaultViewport,
+            executablePath: await chromium.executablePath,
+            headless: true,
+        });
         const page = await browser.newPage();
         
         await page.goto(googleFormUrl, { waitUntil: 'networkidle0' });
